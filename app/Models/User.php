@@ -18,9 +18,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name','email','password','role','phone','is_active',
     ];
 
     /**
@@ -32,6 +30,33 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'is_active' => 'boolean',
+    ];
+
+    //Relationships
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    public function adresses()
+    {
+        return $this->morphMany(Adress::class, 'owner');
+    }
+
+    //helpers
+    public function isProducer(): bool
+    {
+        return $this->role == 'producer';
+    }
+
+    public function isReseller(): bool
+    {
+        return $this->role == 'reseller';
+    }
 
     /**
      * Get the attributes that should be cast.
